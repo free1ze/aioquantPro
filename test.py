@@ -1,14 +1,20 @@
-# -*- coding:utf-8 -*-
-import sys
-import os
+#!/usr/bin/env python
 
-from aioquant import quant
+import time
+import logging
+from binance.lib.utils import config_logging
+from binance.websocket.spot.websocket_stream import SpotWebsocketStreamClient
+
+config_logging(logging, logging.DEBUG)
 
 
-def initialize():
-    print("Hello")
-    pass
+def message_handler(_, message):
+    print(message)
 
-if __name__ == "__main__":
-    config_file = sys.argv[1]
-    quant.start(config_file, initialize)
+
+my_client = SpotWebsocketStreamClient(on_message=message_handler)
+
+
+my_client.book_ticker(symbol="btcusdt")
+
+time.sleep(10)

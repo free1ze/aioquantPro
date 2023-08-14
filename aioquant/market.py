@@ -192,7 +192,7 @@ class Kline:
         return d
 
     def load_smart(self, d):
-        self.platform = d["p"]
+        # self.platform = d["p"]
         self.symbol = d["s"]
         self.open = d["o"]
         self.high = d["h"]
@@ -200,7 +200,7 @@ class Kline:
         self.close = d["c"]
         self.volume = d["v"]
         self.timestamp = d["t"]
-        self.kline_type = d["kt"]
+        # self.kline_type = d["kt"]
         return self
 
     def __str__(self):

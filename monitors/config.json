@@ -1,0 +1,35 @@
+{
+    "RABBITMQ": {
+        "host": "127.0.0.1",
+        "port": 5672,
+        "username": "shx",
+        "password": "123456"
+    },
+    "PROXY": "http://127.0.0.1:7890",
+    "ACCOUNTS": [
+        {
+            "platform": "binance",
+            "account": "sun531251248@gmail.com",
+            "access_key": "jq3WyLzMytCVts4mxU4otDL0E7ZSE51SaSs4MyjwGTF5aHPf4ZoQ3vIElvlQRKIE",
+            "secret_key": "8LrMx87xD0pqAunTfa1ngOwy2UVTJRc9DbeO54ViSjVlJhwZYtXtMeI6NNIbWKYa"
+        }
+    ],
+    "LOG": {
+        "console": false,
+        "level": "INFO",
+        "path": "./log",
+        "name": "quant.log",
+        "clear": true,
+        "backup_count": 5
+    },
+    "HEARTBEAT": {
+        "interval": 30,
+        "broadcast": 0
+    },
+    "DINGTALK": {
+        "access_token": "600176eda275eebc3a94c656a7244eb0c2a76b1f0907d735e886765c13f41b8d"
+    },
+    "strategy": "my_test_strategy",
+    "symbol": "BTCUSDT"
+    
+}

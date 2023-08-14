@@ -17,7 +17,7 @@ from aioquant.utils import logger
 from aioquant.tasks import SingleTask
 from aioquant.order import Order
 from aioquant.position import Position
-
+from aioquant.market import Kline
 
 class Trade:
     """Trade Module.
@@ -48,7 +48,7 @@ class Trade:
 
     def __init__(self, strategy=None, platform=None, symbol=None, host=None, wss=None, account=None, access_key=None,
                  secret_key=None, passphrase=None, order_update_callback=None, position_update_callback=None,
-                 init_callback=None, error_callback=None, **kwargs):
+                 init_callback=None, error_callback=None, kline_update_callback=None, **kwargs):
         """Initialize trade object."""
         kwargs["strategy"] = strategy
         kwargs["platform"] = platform
@@ -63,12 +63,14 @@ class Trade:
         kwargs["position_update_callback"] = self._on_position_update_callback
         kwargs["init_callback"] = self._on_init_callback
         kwargs["error_callback"] = self._on_error_callback
+        kwargs["kline_update_callback"] = self._on_kline_update_callback
 
         self._raw_params = copy.copy(kwargs)
         self._order_update_callback = order_update_callback
         self._position_update_callback = position_update_callback
         self._init_callback = init_callback
         self._error_callback = error_callback
+        self._kline_update_callback = kline_update_callback
 
         if platform == const.BINANCE:
             from aioquant.platform.binance import BinanceTrade as T
@@ -195,3 +197,13 @@ class Trade:
             "account": self._raw_params["account"]
         }
         await self._error_callback(error, **params)
+
+    async def _on_kline_update_callback(self, kline: Kline) -> None:
+        """Callback function when kline update while Trade module is running.
+
+        Args:
+            kline: Kline information.
+        """
+        if not self._kline_update_callback:
+            return
+        await self._kline_update_callback(kline)

@@ -35,6 +35,7 @@ class Configure:
         self.markets = {}
         self.heartbeat = {}
         self.proxy = None
+        self.dingtalk = {}
 
     def loads(self, config_file=None) -> None:
         """Load config file.
@@ -69,6 +70,7 @@ class Configure:
         self.markets = update_fields.get("MARKETS", [])
         self.heartbeat = update_fields.get("HEARTBEAT", {})
         self.proxy = update_fields.get("PROXY", None)
+        self.dingtalk = update_fields.get("DINGTALK", {})
 
         for k, v in update_fields.items():
             setattr(self, k, v)

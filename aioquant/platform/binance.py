@@ -26,6 +26,9 @@ from aioquant.order import ORDER_ACTION_SELL, ORDER_ACTION_BUY, ORDER_TYPE_LIMIT
 from aioquant.order import ORDER_STATUS_SUBMITTED, ORDER_STATUS_PARTIAL_FILLED, ORDER_STATUS_FILLED, \
     ORDER_STATUS_CANCELED, ORDER_STATUS_FAILED
 
+from aioquant.event import *
+from aioquant.market import *
+
 
 __all__ = ("BinanceRestAPI", "BinanceTrade", )
 
@@ -67,7 +70,7 @@ class BinanceRestAPI:
             success: Success results, otherwise it's None.
             error: Error information, otherwise it's None.
         """
-        uri = "/api/v1/time"
+        uri = "/api/v3/time"
         success, error = await self.request("GET", uri)
         return success, error
 
@@ -78,7 +81,7 @@ class BinanceRestAPI:
             success: Success results, otherwise it's None.
             error: Error information, otherwise it's None.
         """
-        uri = "/api/v1/exchangeInfo"
+        uri = "/api/v3/exchangeInfo"
         success, error = await self.request("GET", uri)
         return success, error
 
@@ -92,7 +95,7 @@ class BinanceRestAPI:
             success: Success results, otherwise it's None.
             error: Error information, otherwise it's None.
         """
-        uri = "/api/v1/ticker/24hr"
+        uri = "/api/v3/ticker/24hr"
         params = {
             "symbol": symbol
         }
@@ -110,7 +113,7 @@ class BinanceRestAPI:
             success: Success results, otherwise it's None.
             error: Error information, otherwise it's None.
         """
-        uri = "/api/v1/depth"
+        uri = "/api/v3/depth"
         params = {
             "symbol": symbol,
             "limit": limit
@@ -233,7 +236,7 @@ class BinanceRestAPI:
             success: Success results, otherwise it's None.
             error: Error information, otherwise it's None.
         """
-        uri = "/api/v1/userDataStream"
+        uri = "/api/v3/userDataStream"
         success, error = await self.request("POST", uri)
         return success, error
 
@@ -247,7 +250,7 @@ class BinanceRestAPI:
             success: Success results, otherwise it's None.
             error: Error information, otherwise it's None.
         """
-        uri = "/api/v1/userDataStream"
+        uri = "/api/v3/userDataStream"
         params = {
             "listenKey": listen_key
         }
@@ -264,7 +267,7 @@ class BinanceRestAPI:
             success: Success results, otherwise it's None.
             error: Error information, otherwise it's None.
         """
-        uri = "/api/v1/userDataStream"
+        uri = "/api/v3/userDataStream"
         params = {
             "listenKey": listen_key
         }
@@ -430,6 +433,8 @@ class BinanceTrade:
             SingleTask.run(self._error_callback, e)
             SingleTask.run(self._init_callback, False)
             return
+
+        # logger.info("SHX_DEBUG order",order_infos, caller=self)
         for order_info in order_infos:
             if order_info["status"] == "NEW":
                 status = ORDER_STATUS_SUBMITTED
@@ -469,7 +474,16 @@ class BinanceTrade:
             self._orders[order_id] = order
             SingleTask.run(self._order_update_callback, copy.copy(order))
 
-        SingleTask.run(self._init_callback, True, None)
+        # SHXDEBUG
+        # 向websocket发送订阅请求
+        data = {
+            "method": "SUBSCRIBE",
+            "params":["btcusdt@kline_1s"],
+            "id": 1
+        }
+        await self._ws.send(data)
+
+        SingleTask.run(self._init_callback, True)
 
     async def create_order(self, action, price, quantity, *args, **kwargs):
         """Create an order.
@@ -603,3 +617,13 @@ class BinanceTrade:
 
             if status in [ORDER_STATUS_FAILED, ORDER_STATUS_CANCELED, ORDER_STATUS_FILLED]:
                 self._orders.pop(order_id)
+
+        # SHXDEBUG 
+        if e == "kline":
+            # logger.info("SHX_DEBUG Kline", caller=self)
+            kline = Kline().load_smart(msg["k"])
+            kline.platform = "binance"
+            kline.kline_type = const.MARKET_TYPE_KLINE
+            # logger.info("SHX_DEBUG order", kline, caller=self)
+            EventKline(kline).publish()
+
