@@ -33,7 +33,7 @@ class AIOQuant:
         self._do_heartbeat()
         return self
 
-    def start(self, config_file=None, entrance_func=None) -> None:
+    def start(self, config_file=None, entrance_func=None, stop_func=None) -> None:
         """Start the event loop."""
         def keyboard_interrupt(s, f):
             print("KeyboardInterrupt (ID: {}) has been caught. Cleaning up...".format(s))
@@ -46,6 +46,8 @@ class AIOQuant:
                 self.loop.create_task(entrance_func())
             else:
                 entrance_func()
+        if stop_func:
+            self._stop_func = stop_func
 
         logger.info("start io loop ...", caller=self)
         self.loop.run_forever()
@@ -53,7 +55,8 @@ class AIOQuant:
     def stop(self) -> None:
         """Stop the event loop."""
         logger.info("stop io loop.", caller=self)
-        # TODO: clean up running coroutine
+        if self._stop_func:
+            self._stop_func()
         self.loop.stop()
 
     def _get_event_loop(self) -> asyncio.events.get_event_loop():

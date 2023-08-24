@@ -27,7 +27,6 @@ class Orderbook:
 
     def __init__(self, platform=None, symbol=None, asks=None, bids=None, timestamp=None):
         """Initialize."""
-        self.platform = platform
         self.symbol = symbol
         self.asks = asks
         self.bids = bids
@@ -36,7 +35,6 @@ class Orderbook:
     @property
     def data(self):
         d = {
-            "platform": self.platform,
             "symbol": self.symbol,
             "asks": self.asks,
             "bids": self.bids,
@@ -47,7 +45,6 @@ class Orderbook:
     @property
     def smart(self):
         d = {
-            "p": self.platform,
             "s": self.symbol,
             "a": self.asks,
             "b": self.bids,
@@ -56,7 +53,6 @@ class Orderbook:
         return d
 
     def load_smart(self, d):
-        self.platform = d["p"]
         self.symbol = d["s"]
         self.asks = d["a"]
         self.bids = d["b"]
@@ -83,9 +79,8 @@ class Trade:
         timestamp: Update time, millisecond.
     """
 
-    def __init__(self, platform=None, symbol=None, action=None, price=None, quantity=None, timestamp=None):
+    def __init__(self, symbol=None, action=None, price=None, quantity=None, timestamp=None):
         """Initialize."""
-        self.platform = platform
         self.symbol = symbol
         self.action = action
         self.price = price
@@ -95,7 +90,6 @@ class Trade:
     @property
     def data(self):
         d = {
-            "platform": self.platform,
             "symbol": self.symbol,
             "action": self.action,
             "price": self.price,
@@ -107,7 +101,6 @@ class Trade:
     @property
     def smart(self):
         d = {
-            "p": self.platform,
             "s": self.symbol,
             "a": self.action,
             "P": self.price,
@@ -117,7 +110,6 @@ class Trade:
         return d
 
     def load_smart(self, d):
-        self.platform = d["p"]
         self.symbol = d["s"]
         self.action = d["a"]
         self.price = d["P"]
@@ -136,71 +128,74 @@ class Trade:
 class Kline:
     """Kline object.
 
-    Args:
-        platform: Exchange platform name, e.g. `binance` / `bitmex`.
-        symbol: Trade pair name, e.g. `ETH/BTC`.
-        open: Open price.
-        high: Highest price.
-        low: Lowest price.
-        close: Close price.
-        volume: Total trade volume.
-        timestamp: Update time, millisecond.
-        kline_type: Kline type name, `kline`, `kline_5min`, `kline_15min` ... and so on.
     """
-
-    def __init__(self, platform=None, symbol=None, open=None, high=None, low=None, close=None, volume=None,
-                 timestamp=None, kline_type=None):
-        """Initialize."""
-        self.platform = platform
+    def __init__(self, symbol, kline_type) -> None:
         self.symbol = symbol
-        self.open = open
-        self.high = high
-        self.low = low
-        self.close = close
-        self.volume = volume
-        self.timestamp = timestamp
         self.kline_type = kline_type
-
+        pass
+        
     @property
     def data(self):
         d = {
-            "platform": self.platform,
+            "start_time": self.start_time,
+            "close_time": self.close_time,
             "symbol": self.symbol,
+            "interval": self.interval,
+            "first_trade_id": self.first_trade_id,
+            "last_trade_id": self.last_trade_id,
             "open": self.open,
             "high": self.high,
             "low": self.low,
             "close": self.close,
-            "volume": self.volume,
-            "timestamp": self.timestamp,
-            "kline_type": self.kline_type
+            "base_asset_volume": self.base_asset_volume,
+            "trade_num": self.trade_num,
+            "is_closed": self.is_closed,
+            "quote_asset_volume": self.quote_asset_volume,
+            "taker_buy_base_asset_volume": self.taker_buy_base_asset_volume,
+            "taker_buy_quote_asset_volume": self.taker_buy_quote_asset_volume,
         }
         return d
 
     @property
     def smart(self):
-        d = {
-            "p": self.platform,
+        d = {            
+            "t": self.start_time,
+            "T": self.close_time,
             "s": self.symbol,
+            "i": self.interval,
+            "f": self.first_trade_id,
+            "L": self.last_trade_id, 
             "o": self.open,
+            "c": self.close,
             "h": self.high,
             "l": self.low,
-            "c": self.close,
-            "v": self.volume,
-            "t": self.timestamp,
-            "kt": self.kline_type
+            "v": self.base_asset_volume,
+            "n": self.trade_num,
+            "x": self.is_closed,
+            "q": self.quote_asset_volume,
+            "V": self.taker_buy_base_asset_volume,
+            "Q": self.taker_buy_quote_asset_volume
         }
         return d
 
     def load_smart(self, d):
-        # self.platform = d["p"]
+        self.start_time = d["t"]
+        self.close_time = d["T"]
         self.symbol = d["s"]
+        self.interval = d["i"]
+        self.first_trade_id = d["f"]
+        self.last_trade_id = d["L"]
         self.open = d["o"]
+        self.close = d["c"]
         self.high = d["h"]
         self.low = d["l"]
-        self.close = d["c"]
-        self.volume = d["v"]
-        self.timestamp = d["t"]
-        # self.kline_type = d["kt"]
+        self.base_asset_volume = d["v"]
+        self.trade_num = d["n"]
+        self.is_closed = d["x"]
+        self.quote_asset_volume = d["q"]
+        self.taker_buy_base_asset_volume = d["V"]
+        self.taker_buy_quote_asset_volume = d["Q"]
+        
         return self
 
     def __str__(self):
@@ -210,6 +205,36 @@ class Kline:
     def __repr__(self):
         return str(self)
 
+class Ticker:
+    """Ticker object.
+
+    """
+    def __init__(self) -> None:
+        pass
+        
+    @property
+    def data(self):
+        d = {
+        }
+        return d
+
+    @property
+    def smart(self):
+        d = {            
+        }
+        return d
+
+    def load_smart(self, d):
+        pass
+        
+        return self
+
+    def __str__(self):
+        info = json.dumps(self.data)
+        return info
+
+    def __repr__(self):
+        return str(self)
 
 class Market:
     """Subscribe Market.
@@ -236,17 +261,21 @@ class Market:
             multi = False
         if market_type == const.MARKET_TYPE_ORDERBOOK:
             from aioquant.event import EventOrderbook
-            EventOrderbook(Orderbook(platform, symbol)).subscribe(callback, multi)
+            EventOrderbook(Orderbook(symbol)).subscribe(callback, multi)
         elif market_type == const.MARKET_TYPE_TRADE:
             from aioquant.event import EventTrade
-            EventTrade(Trade(platform, symbol)).subscribe(callback, multi)
+            EventTrade(Trade(symbol)).subscribe(callback, multi)
+        elif market_type == const.MARKET_TYPE_TICKER:
+            EventTrade(Ticker(symbol)).subscribe(callback, multi)
         elif market_type in [
-            const.MARKET_TYPE_KLINE, const.MARKET_TYPE_KLINE_3M, const.MARKET_TYPE_KLINE_5M,
-            const.MARKET_TYPE_KLINE_15M, const.MARKET_TYPE_KLINE_30M, const.MARKET_TYPE_KLINE_1H,
-            const.MARKET_TYPE_KLINE_3H, const.MARKET_TYPE_KLINE_6H, const.MARKET_TYPE_KLINE_12H,
+            const.MARKET_TYPE_KLINE_1S, const.MARKET_TYPE_KLINE_1M, const.MARKET_TYPE_KLINE_3M, 
+            const.MARKET_TYPE_KLINE_5M, const.MARKET_TYPE_KLINE_15M, const.MARKET_TYPE_KLINE_30M, 
+            const.MARKET_TYPE_KLINE_1H, const.MARKET_TYPE_KLINE_2H, const.MARKET_TYPE_KLINE_4H,
+            const.MARKET_TYPE_KLINE_6H, const.MARKET_TYPE_KLINE_8H, const.MARKET_TYPE_KLINE_12H,
             const.MARKET_TYPE_KLINE_1D, const.MARKET_TYPE_KLINE_3D, const.MARKET_TYPE_KLINE_1W,
-            const.MARKET_TYPE_KLINE_15D, const.MARKET_TYPE_KLINE_1MON, const.MARKET_TYPE_KLINE_1Y]:
+            const.MARKET_TYPE_KLINE_1MON
+            ]:
             from aioquant.event import EventKline
-            EventKline(Kline(platform, symbol, kline_type=market_type)).subscribe(callback, multi)
+            EventKline(Kline(symbol, kline_type=market_type)).subscribe(callback, multi)
         else:
             logger.error("market_type error:", market_type, caller=self)

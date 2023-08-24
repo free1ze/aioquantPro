@@ -110,3 +110,83 @@ class Order:
 
     def __repr__(self):
         return str(self)
+
+# class Order:
+#     """Order object.
+
+#     Attributes:
+#         platform: Exchange platform name, e.g. `binance` / `bitmex`.
+#         account: Trading account name, e.g. `test@gmail.com`.
+#         strategy: Strategy name, e.g. `my_strategy`.
+#         order_id: Order id.
+#         client_order_id: Client order id.
+#         symbol: Trading pair name, e.g. `ETH/BTC`.
+#         action: Trading side, `BUY` / `SELL`.
+#         price: Order price.
+#         quantity: Order quantity.
+#         remain: Remain quantity that not filled.
+#         status: Order status.
+#         avg_price: Average price that filled.
+#         order_type: Order type.
+#         trade_type: Trade type, only for future order.
+#         fee: Trading fee.
+#         ctime: Order create time, millisecond.
+#         utime: Order update time, millisecond.
+#     """
+
+#     def __init__(self, symbol=None, orderId=None, orderListId=-1, clientOrderId=None, price=None,
+#                  origQty=0, executedQty=0,cummulativeQuoteQty=0, status=ORDER_STATUS_NONE, timeInForce="GTC", 
+#                  stopPrice=0, order_type=ORDER_TYPE_LIMIT, side=ORDER_ACTION_BUY, icebergQty=0, time=None, 
+#                  updateTime=None, isWorking=None, origQuoteOrderQty=0, workingTime = None, selfTradePreventionMode = None):
+#         self.symbol = symbol
+#         self.orderId =  orderId
+#         self.orderListId = orderListId
+#         self.clientOrderId = clientOrderId
+#         self.price = price
+#         self.origQty = origQty
+#         self.executedQty = executedQty
+#         self.cummulativeQuoteQty = cummulativeQuoteQty
+#         self.status = status
+#         self.timeInForce = timeInForce
+#         self.type = order_type
+#         self.side = side
+#         self.stopPrice = stopPrice
+#         self.icebergQty = icebergQty
+#         self.updateTime = updateTime
+#         self.isWorking = isWorking
+#         self.origQuoteOrderQty = origQuoteOrderQty
+#         self.workingTime = workingTime
+#         self.selfTradePreventionMode = selfTradePreventionMode
+        
+
+#     @property
+#     def data(self):
+#         d = {
+#             "symbol": self.symbol,
+#             "orderId": self.orderId,
+#             "orderListId": self.orderListId,
+#             "clientOrderId": self.clientOrderId,
+#             "price": self.price,
+#             "origQty": self.origQty,
+#             "executedQty": self.executedQty,
+#             "cummulativeQuoteQty": self.cummulativeQuoteQty,
+#             "status": self.status,
+#             "timeInForce": self.timeInForce,
+#             "type": self.type,
+#             "side": self.side,
+#             "stopPrice": self.stopPrice,
+#             "icebergQty": self.icebergQty,
+#             "updateTime": self.updateTime,
+#             "isWorking": self.isWorking,
+#             "origQuoteOrderQty": self.origQuoteOrderQty,
+#             "workingTime": self.workingTime,
+#             "selfTradePreventionMode": self.selfTradePreventionMode
+#         }
+#         return d
+
+#     def __str__(self):
+#         info = json.dumps(self.data)
+#         return info
+
+#     def __repr__(self):
+#         return str(self)

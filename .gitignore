@@ -2,8 +2,7 @@
 *.pyc
 .DS_Store
 build
-dist
-MANIFEST
 test
 scripts
 log/
+keys.json

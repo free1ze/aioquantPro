@@ -15,8 +15,8 @@
         }
     ],
     "LOG": {
-        "console": false,
-        "level": "INFO",
+        "console": true,
+        "level": "DEBUG",
         "path": "./log",
         "name": "quant.log",
         "clear": true,
@@ -30,6 +30,6 @@
         "access_token": "600176eda275eebc3a94c656a7244eb0c2a76b1f0907d735e886765c13f41b8d"
     },
     "strategy": "my_test_strategy",
-    "symbol": "BTCUSDT"
-    
+    "symbol": "BTCUSDT",
+    "testnet": true
 }

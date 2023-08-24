@@ -6,7 +6,6 @@ from aioquant import const
 from aioquant.utils import logger
 from aioquant.configure import config
 from aioquant.market import Market
-from aioquant.trade import Trade
 from aioquant.const import BINANCE
 from aioquant.market import Kline
 from aioquant.market import Orderbook
@@ -14,18 +13,13 @@ from aioquant.utils import tools
 
 import asyncio
 
-from aioquant.utils.dingding import DingTalk
+from aioquant.utils.dingtalk import DingTalk
 
 class PriceWatcher:   
 
     def __init__(self):
         """ 初始化
         """
-        self.strategy = "my_strategy"
-        self.platform = BINANCE
-        self.account = config.accounts[0]["account"]
-        self.access_key = config.accounts[0]["access_key"]
-        self.secret_key = config.accounts[0]["secret_key"]
         self.symbol = config.symbol
 
         self.count_down_time = 300
@@ -45,25 +39,14 @@ class PriceWatcher:
             29340.0,
             29300.0
         ]
-
-        # 交易模块
-        cc = {
-            "strategy": self.strategy,
-            "platform": self.platform,
-            "symbol": self.symbol,
-            "account": self.account,
-            "access_key": self.access_key,
-            "secret_key": self.secret_key,
-        }
-        self.trader = Trade(**cc)
-
+        
         # 订阅行情
-        Market(const.MARKET_TYPE_KLINE, const.BINANCE, self.symbol, self.on_kline_update)
+        Market(symbol=self.symbol, market_type=const.MARKET_TYPE_KLINE_1S, callback=self.on_kline_update)
 
     async def on_kline_update(self, kline: Kline):
         """ 订单薄更新
         """
-        # logger.debug("kline:", kline, caller=self)
+        logger.debug("user kline:", kline, caller=self)
 
         # update count down
         self.update_count_down()
@@ -100,7 +83,7 @@ class PriceWatcher:
                     .format(
                 time=time,symbol=kline.symbol,break_throught = break_throught, price=price) 
             logger.info("DingTalk:", message, caller=self)
-            await DingTalk.send_text_msg(message)
+            # await DingTalk.send_text_msg(message)
 
     def update_count_down(self):
         for price, time in self.last_send.items():

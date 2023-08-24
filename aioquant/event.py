@@ -254,7 +254,7 @@ class EventCenter:
             transport, protocol = await aioamqp.connect(host=self._host, port=self._port, login=self._username,
                                                         password=self._password, login_method="PLAIN")
         except Exception as e:
-            logger.error("connection error:", e, caller=self)
+            logger.error("rabbitMQ connection error:", e, caller=self)
             return
         finally:
             if self._connected:
@@ -269,7 +269,7 @@ class EventCenter:
         exchanges = ["Orderbook", "Kline", "Trade"]
         for name in exchanges:
             await self._channel.exchange_declare(exchange_name=name, type_name="topic")
-        logger.debug("create default exchanges success!", caller=self)
+        logger.info("create default exchanges success!", caller=self)
 
         if reconnect:
             self._bind_and_consume()

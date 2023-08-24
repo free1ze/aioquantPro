@@ -9,7 +9,6 @@ setup(
     packages=[
         "aioquant",
         "aioquant.utils",
-        "aioquant.platform",
     ],
     description="Asynchronous event I/O driven quantitative trading framework.",
     url="https://github.com/JiaoziMatrix/aioquant",
