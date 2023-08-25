@@ -24,23 +24,23 @@ class AIOQuant:
         self.loop = None
         self.event_center = None
 
-    def _initialize(self, config_file):
+    def _initialize(self, config_file, key_file):
         """Initialize."""
         self._get_event_loop()
-        self._load_settings(config_file)
+        self._load_settings(config_file, key_file)
         self._init_logger()
         self._init_event_center()
         self._do_heartbeat()
         return self
 
-    def start(self, config_file=None, entrance_func=None, stop_func=None) -> None:
+    def start(self, config_file=None, key_file=None,entrance_func=None, stop_func=None) -> None:
         """Start the event loop."""
         def keyboard_interrupt(s, f):
             print("KeyboardInterrupt (ID: {}) has been caught. Cleaning up...".format(s))
             self.stop()
         signal.signal(signal.SIGINT, keyboard_interrupt)
 
-        self._initialize(config_file)
+        self._initialize(config_file, key_file)
         if entrance_func:
             if inspect.iscoroutinefunction(entrance_func):
                 self.loop.create_task(entrance_func())
@@ -65,13 +65,13 @@ class AIOQuant:
             self.loop = asyncio.get_event_loop()
         return self.loop
 
-    def _load_settings(self, config_module) -> None:
+    def _load_settings(self, config_module, key_module) -> None:
         """Load config settings.
 
         Args:
             config_module: config file path, normally it's a json file.
         """
-        config.loads(config_module)
+        config.loads(config_module, key_module)
 
     def _init_logger(self) -> None:
         """Initialize logger."""

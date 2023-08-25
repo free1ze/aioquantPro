@@ -116,7 +116,7 @@ class Binance:
         # self._ws.book_ticker(symbol=self._raw_symbol)
         self._ws.kline(symbol=self._raw_symbol, interval=self._interval)
         
-    def connected_callback(self, manager):
+    def connected_callback(self, *args, **kwargs):
         """After websocket connection created successfully, pull back all open order information."""
         logger.info("Websocket connection authorized successfully.", caller=self)
         order_infos, error = self._client.get_open_orders(self._raw_symbol)
@@ -319,5 +319,5 @@ class Binance:
 
     # @async_method_locker("BinanceTrade.process_kline.locker")
     def process_kline(self, msg):
-        kline = Kline().load_smart(msg["k"])
+        kline = Kline(self._raw_symbol).load_smart(msg["k"])
         EventKline(kline).publish()

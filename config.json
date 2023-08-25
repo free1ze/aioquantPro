@@ -6,14 +6,7 @@
         "password": "123456"
     },
     "PROXY": "http://127.0.0.1:7890",
-    "ACCOUNTS": [
-        {
-            "platform": "binance",
-            "account": "sun531251248@gmail.com",
-            "access_key": "jq3WyLzMytCVts4mxU4otDL0E7ZSE51SaSs4MyjwGTF5aHPf4ZoQ3vIElvlQRKIE",
-            "secret_key": "8LrMx87xD0pqAunTfa1ngOwy2UVTJRc9DbeO54ViSjVlJhwZYtXtMeI6NNIbWKYa"
-        }
-    ],
+    "ACCOUNT": "sun531251248@gmail.com",
     "LOG": {
         "console": true,
         "level": "DEBUG",
