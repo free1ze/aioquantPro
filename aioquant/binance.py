@@ -102,6 +102,7 @@ class Binance:
         self._assets = {}  # Asset data. e.g. {"BTC": {"free": "1.1", "locked": "2.2", "total": "3.3"}, ... }
         self._orders = {}  # Order data. e.g. {order_no: order, ... }
 
+
         SingleTask.run(self._init_client)
         SingleTask.run(self._init_websocket)
         # self._client = Spot(api_key=self._access_key, api_secret=self._secret_key, base_url=self._host)
@@ -112,11 +113,17 @@ class Binance:
         self._client = Spot(api_key=self._access_key, api_secret=self._secret_key, base_url=self._host)
         
     async def _init_websocket(self):
-        self._ws = SpotWebsocketStreamClient(on_message=self.process, on_open=self.connected_callback, stream_url=self._wss)
+        def open_handler(*args, **kwargs):
+            logger.error(args, kwargs)
+            SingleTask.run(self.connected_callback)
+        def process_handler(socketMangar, msg):
+            SingleTask.run(self.process, msg)
+        
+        self._ws = SpotWebsocketStreamClient(on_message=process_handler, on_open=open_handler, stream_url=self._wss)
         # self._ws.book_ticker(symbol=self._raw_symbol)
         self._ws.kline(symbol=self._raw_symbol, interval=self._interval)
         
-    def connected_callback(self, *args, **kwargs):
+    def connected_callback(self):
         """After websocket connection created successfully, pull back all open order information."""
         logger.info("Websocket connection authorized successfully.", caller=self)
         order_infos, error = self._client.get_open_orders(self._raw_symbol)
@@ -256,8 +263,8 @@ class Binance:
     #             order_ids.append(order_id)
     #         return order_ids, None
     
-    # @async_method_locker("BinanceTrade.process.locker")
-    def process(self, manager, msg):
+    @async_method_locker("BinanceTrade.process.locker")
+    async def process(self, manager, msg):
         """Process message that received from Websocket connection.
 
         Args:

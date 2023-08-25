@@ -16,7 +16,7 @@
         "backup_count": 5
     },
     "HEARTBEAT": {
-        "interval": 30,
+        "interval": 3,
         "broadcast": 0
     },
     "DINGTALK": {

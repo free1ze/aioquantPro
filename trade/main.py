@@ -2,6 +2,7 @@
 
 import sys
 import os
+import argparse
 
 from aioquant import quant
 from aioquant.utils import logger
@@ -10,8 +11,15 @@ from aioquant.binance import Binance
 
 trader = None
 
+def parse_args():
+    parser = argparse.ArgumentParser(description='Process some .')
+    parser.add_argument('--config', type=str, help='config file')
+    parser.add_argument('--key', type=str, help='key file')
+
+    args = parser.parse_args()
+    return args
+
 def initialize():
-    # 交易模块
     cc = {
         "strategy": "my_strategy",
         "platform": "binance",
@@ -34,12 +42,13 @@ def initialize():
     
 def close_connection():
     trader._ws.stop()
-    
 
 if __name__ == "__main__":
-    if len(sys.argv) != 3:
-        logger.error("miss params to start! need config_file_path and key_file_path")
-        exit(1)
-    config_file = sys.argv[1]
-    key_file = sys.argv[2]
-    quant.start(config_file, key_file, initialize, close_connection)
+    args = parse_args()
+    config_file = args.config
+    key_file = args.key
+    quant.start(
+        config_file=config_file, 
+        key_file=key_file,
+        entrance_func=initialize,
+        stop_func=close_connection)
