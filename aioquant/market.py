@@ -132,7 +132,23 @@ class Kline:
     def __init__(self, symbol, kline_type) -> None:
         self.symbol = symbol
         self.kline_type = kline_type
-        pass
+        
+        self.start_time = None
+        self.close_time = None
+        self.symbol = None
+        self.interval = None
+        self.first_trade_id = None
+        self.last_trade_id = None
+        self.open = None
+        self.close = None
+        self.high = None
+        self.low = None
+        self.base_asset_volume = None
+        self.trade_num = None
+        self.is_closed = None
+        self.quote_asset_volume = None
+        self.taker_buy_base_asset_volume = None
+        self.taker_buy_quote_asset_volume = None
         
     @property
     def data(self):
@@ -253,9 +269,9 @@ class Market:
                         pass
     """
 
-    def __init__(self, market_type, platform, symbol, callback):
+    def __init__(self, market_type, symbol, callback):
         """Initialize."""
-        if platform == "#" or symbol == "#":
+        if symbol == "#":
             multi = True
         else:
             multi = False
@@ -270,10 +286,9 @@ class Market:
         elif market_type in [
             const.MARKET_TYPE_KLINE_1S, const.MARKET_TYPE_KLINE_1M, const.MARKET_TYPE_KLINE_3M, 
             const.MARKET_TYPE_KLINE_5M, const.MARKET_TYPE_KLINE_15M, const.MARKET_TYPE_KLINE_30M, 
-            const.MARKET_TYPE_KLINE_1H, const.MARKET_TYPE_KLINE_2H, const.MARKET_TYPE_KLINE_4H,
-            const.MARKET_TYPE_KLINE_6H, const.MARKET_TYPE_KLINE_8H, const.MARKET_TYPE_KLINE_12H,
-            const.MARKET_TYPE_KLINE_1D, const.MARKET_TYPE_KLINE_3D, const.MARKET_TYPE_KLINE_1W,
-            const.MARKET_TYPE_KLINE_1MON
+            const.MARKET_TYPE_KLINE_1H, const.MARKET_TYPE_KLINE_4H, const.MARKET_TYPE_KLINE_6H,
+            const.MARKET_TYPE_KLINE_12H, const.MARKET_TYPE_KLINE_1D, const.MARKET_TYPE_KLINE_3D, 
+            const.MARKET_TYPE_KLINE_1W, const.MARKET_TYPE_KLINE_1MON
             ]:
             from aioquant.event import EventKline
             EventKline(Kline(symbol, kline_type=market_type)).subscribe(callback, multi)

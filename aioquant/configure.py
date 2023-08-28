@@ -31,33 +31,36 @@ class Configure:
         self.server_id = None
         self.log = {}
         self.rabbitmq = {}
-        self.accounts = []
+        self.accounts = None
         self.markets = {}
         self.heartbeat = {}
         self.proxy = None
         self.dingtalk = {}
 
-    def loads(self, config_file=None) -> None:
+    def loads(self, config_file, key_file) -> None:
         """Load config file.
 
         Args:
             config_file: config json file.
         """
-        configures = {}
-        if config_file:
-            try:
-                with open(config_file) as f:
-                    data = f.read()
-                    configures = json.loads(data)
-            except Exception as e:
-                print(e)
-                exit(0)
-            if not configures:
-                print("config json file error!")
-                exit(0)
-        self._update(configures)
+        def try_open_file(file):
+            if file:
+                try:
+                    with open(file) as f:
+                        data = f.read()
+                        json_file = json.loads(data)
+                except Exception as e:
+                    print(e)
+                    exit(0)
+                if not json_file:
+                    print("config json file error!")
+                    exit(0)
+            return json_file
+        configures = try_open_file(config_file)
+        keys = try_open_file(key_file)
+        self._update(configures, keys)
 
-    def _update(self, update_fields) -> None:
+    def _update(self, update_fields, keys) -> None:
         """Update config attributes.
 
         Args:
@@ -66,11 +69,16 @@ class Configure:
         self.server_id = update_fields.get("SERVER_ID", tools.get_uuid1())
         self.log = update_fields.get("LOG", {})
         self.rabbitmq = update_fields.get("RABBITMQ", None)
-        self.accounts = update_fields.get("ACCOUNTS", [])
+        self.account = update_fields.get("ACCOUNT", None)
         self.markets = update_fields.get("MARKETS", [])
         self.heartbeat = update_fields.get("HEARTBEAT", {})
         self.proxy = update_fields.get("PROXY", None)
         self.dingtalk = update_fields.get("DINGTALK", {})
+        
+        if not self.account:
+            print("no account!")
+            exit(0)
+        self.keys = keys.get(self.account)
 
         for k, v in update_fields.items():
             setattr(self, k, v)

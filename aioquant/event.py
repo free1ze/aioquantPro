@@ -136,7 +136,7 @@ class EventKline(Event):
         """Initialize."""
         name = "EVENT_KLINE"
         exchange = "Kline"
-        routing_key = "{p}.{s}".format(p=kline.platform, s=kline.symbol)
+        routing_key = "{p}.{s}".format(p="Binance", s=kline.symbol)
         queue = "{sid}.{ex}.{rk}".format(sid=config.server_id, ex=exchange, rk=routing_key)
         super(EventKline, self).__init__(name, exchange, queue, routing_key, data=kline.smart)
 
